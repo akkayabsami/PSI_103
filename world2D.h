@@ -19,6 +19,10 @@ public:
 
 	void start();
 
+	void startWithSamePos(float* alphas);
+
+	void start(int trial, float alpha);
+
 
 
 

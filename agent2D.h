@@ -3,12 +3,18 @@
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include "target.h"
 #include "Vector.h"
 #include "AngularVector.h"
 
 class agent2D {
 public:
+
+	int step = 1;
+	int trial = 0;
 
 	float size = 5.0;
 	float alpha = 0.80;
@@ -17,10 +23,15 @@ public:
 	AngularVector viewPoint; // Görüş noktası
 	Vector moveDirection; // Hareket yönü
 
-
 	Target* target;
 
-	agent2D(Vector pos, Target* target) {
+	std::fstream MyFile;
+
+	agent2D(Vector pos, Target* target, float alpha) {
+
+		std::ostringstream ss;
+		ss << alpha;
+		MyFile.open("Report_" + ss.str() + ".txt", std::fstream::out);
 
 		this->pos = pos;
 		std::cout << "Agent is on X: " << this->pos.getX() << ", Y: " << this->pos.getY() << std::endl;
@@ -42,6 +53,8 @@ public:
 			this->pos.increaseX(moveVector.getX());
 			this->pos.increaseY(moveVector.getY());
 			std::cout << "X: " << this->pos.getX() << ", Y: " << this->pos.getY() << std::endl;
+			this->MyFile << step << "\t: " << "Agent is located at X:" << this->pos.getX() << ", Y:" << this->pos.getY() << std::endl;
+			step++;
 			return 1;
 		}
 		return 0;
@@ -66,7 +79,22 @@ public:
 		return 1;
 	}
 
+	void setPos(Vector vector) {
+		std::cout << "Agent is located at X:" << this->pos.getX() << ", Y:" << this->pos.getY() << std::endl;
+		this->pos = vector;
+	}
 
+	void setTarget(Target* target) {
+		delete(this->target);
+		this->target = target;
+	}
 
+	void openFileAtAppendMode() {
+		this->MyFile.open("Report.txt", std::fstream::app);
+	}
+
+	void closeFile() {
+		this->MyFile.close();
+	}
 
 };

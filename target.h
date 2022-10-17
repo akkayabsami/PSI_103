@@ -6,14 +6,14 @@ class Target {
 
 private:
 
-	float x = 100;
-	float y = 100;
+	float x;
+	float y;
 
 public:
 
 	Target() {
-		this->x = 5;
-		this->y = (float(rand()) / float((RAND_MAX)) * 30.0) + 35.0;
+		this->x = (float(rand()) / float((RAND_MAX)) * 30.0) + 35.0;
+		this->y = 5.0;
 		std::cout << "Target is on X: " << this->x << ", Y: " << this->y << std::endl;
 	}
 
