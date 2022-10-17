@@ -14,6 +14,7 @@ public:
 	Target() {
 		this->x = 5;
 		this->y = (float(rand()) / float((RAND_MAX)) * 30.0) + 35.0;
+		std::cout << "Target is on X: " << this->x << ", Y: " << this->y << std::endl;
 	}
 
 	float getX() {

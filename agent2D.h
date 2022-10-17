@@ -10,11 +10,12 @@
 class agent2D {
 public:
 
-	float size = 5;
+	float size = 5.0;
 	float alpha = 0.80;
 
 	Vector pos;
-	AngularVector viewPoint;
+	AngularVector viewPoint; // Görüş noktası
+	Vector moveDirection; // Hareket yönü
 
 
 	Target* target;
@@ -22,10 +23,11 @@ public:
 	agent2D(Vector pos, Target* target) {
 
 		this->pos = pos;
+		std::cout << "Agent is on X: " << this->pos.getX() << ", Y: " << this->pos.getY() << std::endl;
 		this->target = target;
-		float viewPoint_x = (float(rand()) / float((RAND_MAX)) * 60.0) - 30.0;
-		float viewPoint_y = (float(rand()) / float((RAND_MAX)) * 60.0) - 30.0;
-		this->viewPoint = AngularVector(viewPoint_x, viewPoint_y);
+		float viewPoint_angle = (float(rand()) / float((RAND_MAX)) * 60.0) - 30.0;
+		this->viewPoint = AngularVector(viewPoint_angle);
+		moveDirection = viewPoint.toVector().unitVector();
 	};
 
 	Vector perceive() {
@@ -34,30 +36,32 @@ public:
 
 	int move(Vector vector) {
 
-		if ((vector.getX() + this->pos.getX() <= 100.0) && (vector.getY() + this->pos.getY() <= 200.0)) {
+		if ((vector.getX() + this->pos.getX() + this->size/2 < 100.0) && (vector.getX() + this->pos.getX() - this->size/2 > 0) && (vector.getY() + this->pos.getY() + this->size/2 < 200.0) && (vector.getY() + this->pos.getY() - this->size/2 > 0)) {
 			
-			this->pos.increaseX(vector.getX());
-			this->pos.increaseY(vector.getY());
+			Vector moveVector = vector.unitVector() * 2.0;
+			this->pos.increaseX(moveVector.getX());
+			this->pos.increaseY(moveVector.getY());
 			std::cout << "X: " << this->pos.getX() << ", Y: " << this->pos.getY() << std::endl;
+			return 1;
 		}
-		std::cout << "X: " << this->pos.getX() << ", Y: " << this->pos.getY() << std::endl;
-		std::cout << "X: " << (vector.getX() + this->pos.getX()) << ", Y: " << (vector.getY() + this->pos.getY()) << std::endl;
 		return 0;
 	}
 
 	int decide() {
 
-		if (perceive().getLength() < 1) {
+		if (perceive().getLength() < 1.0) {
 			std::cout << "Hedefe ulaşıldı!" << std::endl;
 			return 0;
 		}
 
 		Vector distance = perceive();
 		Vector v1 = distance.unitVector();
+		Vector v2 = moveDirection;
 
-		//Vector v2 =
+		//V2 = moveDirection
+		v1 = v2 * (1 - alpha) + v1 * alpha;
 
-		if (!move(Vector(1, -1))) return 0;
+		if (!move(v1)) return 0;
 
 		return 1;
 	}
