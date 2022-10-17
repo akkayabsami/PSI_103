@@ -11,6 +11,7 @@ $ make -f makefile.c
 ```
 komutunu çalıştırın.
 
+
 Uygulamayı çalıştırmak için:
 ```
 $ ./executable
